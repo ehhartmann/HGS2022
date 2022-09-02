@@ -1,0 +1,264 @@
+---
+title: "Conducting reactions <br> for classical <br> Molecular Dynamics <br> simulations"
+date: today
+institute: Heidelberg Institute for Theoretical Studies
+author:
+  - name: Eric Hartmann
+    affiliations:
+      - id: hits
+        name: Heidelberg Institute for Theoretical Studies
+        url: https://www.h-its.org/
+      - id: uni-hd
+        name: Heidelberg University
+        url: https://www.uni-heidelberg.de/
+    orcid: 0000-0000-0000-0000
+    email: JD@example.org
+    url: https://example.org/
+
+keywords: [template, demo]
+bibliography: references.bib  
+citation:
+  type: article
+  citation-key: citationKeyNumber
+  status: draft
+format:
+  hits-revealjs:
+    title-slide-attributes:
+      data-background-image: ./www/Collagen_render_opaque.png
+      data-background-color: white
+      data-background-size: fill
+      data-background-position: center
+    css: presentation.css
+  hits-pdf:
+    keep-tex: true  
+molstar: embed
+---
+## Mechanoradicals originate from homolytic bond scission in polymers
+
+![](www/Rubber_bands.jpg){fig-align="center"}
+
+$$  A-B \longrightarrow A\cdot + \cdot B  
+$$
+
+## Collagen is an ideal biomolecule to search for mechanoradicals
+
+![](www/Tendon_stretching.jpg){fig-align="center"}
+
+::: footer
+Experiments conducted by Christopher Zapp and Markus Kurth
+:::
+
+## EPR experiments show radicals in collagen
+\ 
+
+![](www/DOPA_EPR.png){fig-align="center"}
+
+::: footer
+Experiments conducted by Christopher Zapp and Markus Kurth
+:::
+
+## Mechanoradicals can be linked to cellular stress
+\ 
+
+![](www/ROS.png){fig-align="center"}
+
+::: footer
+Experiments conducted by Christopher Zapp and Markus Kurth
+:::
+
+## Molecular dynamics (MD) simulations serve as a computational microscope
+\ 
+
+![](www/Comp_microscope.jpeg){fig-align="center"}
+
+## In MD, time evolution of a system is simulated {#md1}
+$$
+f: (\textbf{x}_t,\textbf{v}_t,\textbf{V})\mapsto (\textbf{x}_{t+\Delta t},\textbf{v}_{t+\Delta t}) \qquad \qquad \textbf{F} = - \frac{\partial V}{\partial \textbf{x}}  \qquad \textbf{F} = m\textbf{a}
+$$
+$$
+\textbf{x} - position, \qquad \textbf{v} - velocity, \qquad \textbf{F} - force, \qquad \textbf{V} - potential
+$$
+
+[comment]: # {{< mol-traj ./www/argon.pdb ./www/argon.xtc >}}
+{{< mol-snapshot ./www/argon_state.molx >}}
+
+::: footer
+Molstar viewer embedded through quarto-molstar by jmbuhr
+:::
+
+## Different potentials are used in simulations
+\ 
+
+{{< mol-traj ./www/Ala.pdb ./www/Ala.xtc >}}
+
+::: footer
+Molstar viewer embedded through quarto-molstar by jmbuhr
+:::
+
+## Hybrid methods can be applied for efficient simulations {#QMMM}
+
+![](www/qmmm.svg){fig-align="center"}
+
+::: footer
+from bioicons by simonduerr
+:::
+
+## Collagen has structural features on multiple scales {#vid1 background-color="black" background-video="./www/collagen_intro_ann.mp4"}
+
+::: footer
+made by Kai Riedmiller
+:::
+
+## KIMMDY uses an optimized MD engine and adds reactions {#flow}
+
+![](www/KIMMDY_cycle.png){fig-align="center"}
+
+::: footer
+Rennekamp et al. Hybrid Kinetic Monte Carlo/Molecular Dynamics Simulations of Bond Scissions in Proteins. J. Chem. Theory Comput. (2020)
+:::
+
+## Our method is implemented as a framework
+
+![](www/uml.svg){fig-align="center"}
+
+## Config files and logging improve reproducibility {#config}
+\ 
+
+```yaml
+dryrun: false
+name: 'protein_001'
+ff: 'amber99sb-star-ildnp.ff'
+top: 'protein.top'
+gro: 'protein.gro'
+idx: 'index.ndx'
+plumed:
+  dat: 'plumed.dat'
+  distances: 'distances.dat'
+MD_equilibration:
+  mdp: 'MD_equilibration.mdp'
+MD_long:
+  mdp: 'MD_long.mdp'
+>
+```
+
+::: footer
+https://github.com/hits-mbm-dev
+::::
+
+## Config files and logging improve reproducibility {#config2}
+\
+
+```yaml
+>
+changer:
+  coordinates:
+    md:
+      mdp: 'relaxation.mdp'
+reactions:
+  homolysis:
+    edis: 'edissoc.dat'
+    bonds: 'ffbonded.itp'
+  HAT:
+sequence:
+  - equilibration
+  -
+    mult: 3
+    tasks:
+      - reactions
+      - MD_long
+```
+
+::: footer
+https://github.com/hits-mbm-dev
+::::
+
+
+## The Reaction ABC enforces a common interface
+\
+```python
+# Reaction definition in KIMMDY
+@dataclass
+class ConversionRecipe:
+    type: list[ConversionType]
+    atom_idx: list[tuple[int, int]]
+
+@dataclass
+class ReactionResult:
+    recipes: list[ConversionRecipe]
+    rates: list[float]
+
+class Reaction(ABC):
+    @abstractmethod
+    def get_reaction_result(self, files) -> ReactionResult:
+        pass
+```
+
+::: footer
+https://github.com/hits-mbm-dev
+::::
+
+## Reactions are added as plugins
+\
+```ini
+# part of a setup.cfg file to install plugins
+[options.entry_points]
+kimmdy.plugins =
+    dummyreaction = dummyreaction.reactions:dummy_reaction
+    HAT = HAT.reactions:HAT_reaction
+```
+\
+```python
+# code block gets executed at the beginning of a KIMMDY run
+from importlib.metadata import entry_points
+
+discovered_plugins = entry_points()["kimmdy.plugins"]
+plugins = {}
+for _ep in discovered_plugins:
+    try:
+        plugins[_ep.name] = _ep.load()
+```
+::: footer
+https://github.com/hits-mbm-dev
+::::
+
+## Our code is open source and designed to be user friendly {#intro}
+\
+
+#### Quick start
+`git clone https://github.com/hits-mbm-dev/kimmdy.git`
+
+* `cd kimmdy`
+* `conda env create -f environment.yml -n kimmdy`
+* `conda activate kimmdy`
+* make sure you use a GROMACS version patched by PLUMED
+* check whether kimmdy works properly: `cd tests; pytest`
+\
+
+#### First simulation
+* change directory to `example_triala`
+* `ln -s ../../tests/test_files/assets/amber99sb-star-ildnp.ff ./amber99sb-star-ildnp.ff`
+* run kimmdy: `kimmdy -l INFO`
+* check output: `kimmdy.log`, `simulation_001/`
+
+::: footer
+https://github.com/hits-mbm-dev
+::::
+
+
+## Reactive MD shows radical migration pathways
+[comment]: # {{< mol-traj ./www/rngpep.pdb ./www/rngpep.xtc >}}
+{{< mol-snapshot ./www/rngpep.molx >}}
+
+
+::: footer
+Molstar viewer embedded through quarto-molstar by jmbuhr
+:::
+
+
+# Conclusions
+- Mechanoradicals play a role in cellular stress
+- KIMMDY simulations are reactive and fast
+- KIMMDY is designed to be accessible and extensible
+
+# {background-color="#003063" background-image="./www/Thank_you.png" background-size=contain}
+

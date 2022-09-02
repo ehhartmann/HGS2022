@@ -1,0 +1,7 @@
+Conducting reactions for classical Molecular Dynamics simulations
+Eric Hartmann
+Heidelberg Institute for Theoretical Studies, Heidelberg, Germany
+It has been established nearly a century ago that mechanoradicals originate from homolytic bond scission in polymers. Recently, formation of radicals through mechanical stress has been shown in the protein collagen, indicating a role for mechanoradicals in biology. Classical Molecular Dynamics simulations serve as a tool to understand the underlying mechanisms but reach their limit because of their non-reactive nature.
+We are developing a reactive molecular dynamics scheme which treats reactions separately using the kinetic Monte Carlo method  
+
+- XX Polymers. Our group has shown it experimentally. Take a deeper look with MD simulations. lack of methods for task. Own methode developed and implemented. General Design principles discussed

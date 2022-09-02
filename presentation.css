@@ -1,0 +1,57 @@
+.title {  
+    font-size: 1.8em;
+}
+
+#title-slide {
+    text-align: left;
+}
+
+#title-slide .title {
+	font-size: 2.5em;
+}
+
+#title-slide .subtitle {
+	margin-bottom: 2.5rem;
+	font-size: 1.5em;
+}
+
+.reveal h2 {
+    font-size: 1.5em;
+}
+
+.molstar-app {
+    position: relative;
+    height: 80%;
+    width: 100%;
+  }
+
+#md1 .molstar-app{
+    height: 62%;
+}
+
+.sourceCode{
+    font-size: 1.2em;
+}
+
+#config .sourceCode{
+    height: 93%;
+}
+
+#config2 .sourceCode{
+    height: 93%;
+}
+
+#vid1 h2{
+    font-size: 1.4em;
+}
+
+
+#intro ul{
+    font-size: 0.8em;
+}
+
+#intro code{
+	background-color: rgba(175,184,193,0.2);
+    font-size: 0.8em;
+
+}
