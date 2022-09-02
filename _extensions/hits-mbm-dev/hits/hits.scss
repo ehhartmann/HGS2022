@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Mono&family=Miriam+Libre&family=Roboto&display=swap');
 
 /*-- scss:defaults --*/
-$hits-blue: #003063;
+$hits-blue: #1E4287;
 $hits-green: "#019050";
 $hits-magenta: "#c3006b";
 $hits-yellow: "#ffcc00";
@@ -63,6 +63,10 @@ $presentation-title-slide-text-align: center;
 .reveal .footer a {
   color: inherit;
   text-decoration: underline;
+}
+
+.reveal .slide-logo {
+  max-height: 6rem !important;
 }
 
 a {

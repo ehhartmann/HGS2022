@@ -18,7 +18,7 @@ contributes:
     pdf:
       csl: ./biophysical-journal.csl
       header-includes: |
-        \definecolor{hitsblue}{RGB}{0, 48, 99}
+        \definecolor{hitsblue}{RGB}{0, 31, 73}
       linkcolor: hitsblue
       urlcolor: hitsblue
     html:
@@ -42,6 +42,8 @@ contributes:
       css: presentation.css
       chalkboard: true
       theme: [default, hits.scss]
+      logo: ./www/hits-logo.png
+      footer: "[h-its.org](https://h-its.org)"
       code-copy: true
       code-link: true
       fig-responsive: true

@@ -1,5 +1,9 @@
 ---
 title: "Conducting reactions <br> for classical <br> Molecular Dynamics <br> simulations"
+title-slide-attributes:
+  data-background-image: ./www/Collagen_render_opaque.png
+  data-background-position: center
+  data-background-size: fill
 date: today
 institute: Heidelberg Institute for Theoretical Studies
 author:
@@ -23,11 +27,6 @@ citation:
   status: draft
 format:
   hits-revealjs:
-    title-slide-attributes:
-      data-background-image: ./www/Collagen_render_opaque.png
-      data-background-color: white
-      data-background-size: fill
-      data-background-position: center
     css: presentation.css
   hits-pdf:
     keep-tex: true  
